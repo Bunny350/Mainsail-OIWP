@@ -1,4 +1,26 @@
 <template>
+    <v-dialog v-model="isOpen" max-width="600" :fullscreen="isMobile">
+        <template #activator="{ on: menu, attrs }">
+            <v-tooltip bottom :open-delay="150">
+                <template v-slot:activator="{ on: tooltip }">
+                    <template v-if="inToolbar">
+                        <v-btn icon tile v-bind="attrs" v-on="{ ...tooltip, ...menu }">
+                            <v-icon small>{{ mdiHelp }}</v-icon>
+                        </v-btn>
+                    </template>
+                    <template v-else>
+                        <v-btn
+                            class="gcode-command-btn px-2 minwidth-0"
+                            color="lightgray"
+                            :small="isMini"
+                            v-bind="attrs"
+                            v-on="{ ...tooltip, ...menu }">
+                            <v-icon>{{ mdiHelp }}</v-icon>
+                        </v-btn>
+                    </template>
+                </template>
+                <span>{{ $t('Console.CommandList') }}</span>
+            </v-tooltip>
     <v-dialog v-model="isOpen" transition="dialog-bottom-transition" max-width="600" :fullscreen="isMobile">
         <template #activator="{ on, attrs }">
             <v-btn v-if="inToolbar" icon tile v-bind="attrs" v-on="on">

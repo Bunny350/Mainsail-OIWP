@@ -4,19 +4,26 @@
         <klippy-state-panel />
         <panel
             v-if="klipperReadyForGui"
-            :icon="mdiInformation"
+            :icon="statusIcon"
+            :multipleIcons="true"
             :title="printerStateOutput"
             :collapsible="true"
             card-class="status-panel">
             <template #icon>
+            <div v-if="['paused', 'printing'].includes(printer_state)" style="position: absolute; top: 6px; left: 16px">
                 <v-progress-circular
-                    v-if="['paused', 'printing'].includes(printer_state)"
                     :rotate="-90"
                     :size="30"
                     :width="5"
                     :value="printPercent"
-                    color="primary"
-                    class="mr-3" />
+                    :color="progressColor" />
+                    
+                    <Transition name="scale">
+                    <div style="position: absolute; top: 0px; margin: 0px 0px 7px 7px" v-if="['paused'].includes(printer_state)">
+                    <v-icon color="warning" small>{{ mdiPause }}</v-icon>
+                    </div>
+                    </transition>
+            </div>
             </template>
             <template #buttons>
                 <v-btn
@@ -90,7 +97,12 @@
             </template>
             <v-tabs v-model="activeTab" fixed-tabs>
                 <v-tab v-if="current_filename" href="#status">
-                    <v-icon>{{ mdiSpeedometer }}</v-icon>
+                    <template v-if="legacyDynamicSpeedometer">
+                        <v-icon v-if="currentSpeed < reach_mid_speed">{{ mdiSpeedometerSlow }} </v-icon>
+                        <v-icon v-else-if="currentSpeed < max_velocity_one_and_quarter">{{ mdiSpeedometerMedium }}</v-icon>
+                        <v-icon v-else>{{ mdiSpeedometer }}</v-icon>
+                    </template>
+                    <template v-else> <speedometer :style="'--var-transform: rotate(' + get_angle_by_speed + 'deg)'" /> </template>
                 </v-tab>
                 <v-tab v-if="displayFilesTab" href="#files">
                     <v-icon>{{ mdiFileDocumentMultipleOutline }}</v-icon>
@@ -100,7 +112,17 @@
                 </v-tab>
                 <v-tab href="#jobqueue">
                     <v-badge :color="jobQueueBadgeColor" :content="jobsCount.toString()" :inline="true">
-                        <v-icon color="disabled">{{ mdiTrayFull }}</v-icon>
+                    <template>
+                        <template v-if="jobsCount == 0">
+                            <v-icon color="disabled" >{{ mdiTray }}</v-icon>
+                            </template> <template v-else-if="jobsCount == 1">
+                            <v-icon color="disabled">{{ tray1l }}</v-icon>
+                            </template> <template v-else-if="jobsCount == 2">
+                            <v-icon color="disabled">{{ tray2l }}</v-icon>
+                            </template> <template v-else-if="jobsCount > 2">
+                            <v-icon color="disabled">{{ mdiTrayFull }}</v-icon>
+                            </template>
+                        </template>
                     </v-badge>
                 </v-tab>
             </v-tabs>
@@ -137,6 +159,7 @@ import { Mixins, Watch } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import MinSettingsPanel from '@/components/panels/MinSettingsPanel.vue'
 import KlippyStatePanel from '@/components/panels/KlippyStatePanel.vue'
+import Speedometer from '@/components/ui/Speedometer.vue'
 import StatusPanelPrintstatus from '@/components/panels/Status/Printstatus.vue'
 import StatusPanelGcodefiles from '@/components/panels/Status/Gcodefiles.vue'
 import StatusPanelHistory from '@/components/panels/Status/History.vue'
@@ -147,8 +170,11 @@ import StatusPanelPauseAtLayerDialog from '@/components/panels/Status/PauseAtLay
 import Panel from '@/components/ui/Panel.vue'
 import {
     mdiAlertOutline,
+    mdiAlertCircleOutline,
     mdiBroom,
+    mdiCheckBold,
     mdiCloseCircle,
+    mdiCloseThick,
     mdiDotsVertical,
     mdiFileDocumentMultipleOutline,
     mdiHistory,
@@ -158,12 +184,17 @@ import {
     mdiPause,
     mdiPlay,
     mdiPrinter,
+    mdiProgressQuestion,
     mdiSelectionRemove,
     mdiSpeedometer,
+    mdiSpeedometerSlow,
+    mdiSpeedometerMedium,
     mdiStop,
     mdiStopCircleOutline,
+    mdiTray,
     mdiTrayFull,
 } from '@mdi/js'
+import { tray1l, tray2l } from '@/plugins/customIconsCommon'
 import { PrinterStateMacro } from '@/store/printer/types'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 
@@ -173,6 +204,7 @@ import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
         KlippyStatePanel,
         MinSettingsPanel,
         Panel,
+        'speedometer': Speedometer,
         StatusPanelExcludeObject,
         StatusPanelGcodefiles,
         StatusPanelHistory,
@@ -184,14 +216,24 @@ import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 })
 export default class StatusPanel extends Mixins(BaseMixin) {
     mdiAlertOutline = mdiAlertOutline
+    mdiAlertCircleOutline = mdiAlertCircleOutline
     mdiCloseCircle = mdiCloseCircle
+    mdiCheckBold = mdiCheckBold
+    mdiCloseThick = mdiCloseThick
     mdiDotsVertical = mdiDotsVertical
     mdiFileDocumentMultipleOutline = mdiFileDocumentMultipleOutline
     mdiInformation = mdiInformation
     mdiHistory = mdiHistory
     mdiMessageProcessingOutline = mdiMessageProcessingOutline
+    mdiPause = mdiPause
+    mdiProgressQuestion = mdiProgressQuestion
     mdiSpeedometer = mdiSpeedometer
+    mdiSpeedometerMedium = mdiSpeedometerMedium
+    mdiSpeedometerSlow = mdiSpeedometerSlow
     mdiStopCircleOutline = mdiStopCircleOutline
+    mdiTray = mdiTray
+    tray1l = tray1l
+    tray2l = tray2l
     mdiTrayFull = mdiTrayFull
 
     showCancelJobDialog = false
@@ -223,6 +265,41 @@ export default class StatusPanel extends Mixins(BaseMixin) {
 
     get printPercent() {
         return Math.floor(this.$store.getters['printer/getPrintPercent'] * 100)
+    }
+    
+    get progressColor() {
+        if (['printing'].includes(this.printer_state)) return 'primary'
+        else if (['paused'].includes(this.printer_state)) return 'warning'
+        else if (['complete'].includes(this.printer_state)) return 'success'
+        else if (['cancelled'].includes(this.printer_state)) return 'error'
+    
+    }
+    
+    get statusIcon() {
+    if (this.printer_state !== '') {
+        if (['complete'].includes(this.printer_state)) return mdiCheckBold
+        else if (['cancelled'].includes(this.printer_state)) return mdiCloseThick
+        else if (['error'].includes(this.printer_state)) return mdiAlertCircleOutline
+        else return mdiInformation
+        } else return mdiProgressQuestion
+    
+    }
+
+    get statusIconPro() {
+        return [
+            {
+            test1: ['complete'].includes(this.printer_state),
+            icon: mdiCheckBold,
+            }, {
+            test1: ['cancelled'].includes(this.printer_state),
+            icon: mdiCloseThick,
+            }, {
+            test1: ['error'].includes(this.printer_state),
+            icon: mdiAlertCircleOutline,
+            }, {
+            icon: mdiInformation
+            }
+        ]
     }
 
     get printerStateOutput() {
@@ -396,6 +473,63 @@ export default class StatusPanel extends Mixins(BaseMixin) {
         return count > 0
     }
 
+    get forceReducedMotion() {
+        return this.$store.state.gui.uiSettings.forceReducedMotion ?? false
+    }
+
+    get legacyDynamicSpeedometer() {
+        return this.$store.state.gui.uiSettings.legacyDynamicSpeedometer ?? false
+    }
+    
+    get currentSpeed(): number {
+        const requestedSpeed = this.$store.state.printer.gcode_move?.speed ?? 0
+        const speedFactor = this.$store.state.printer.gcode_move?.speed_factor ?? 0
+        const maxVelocity = this.$store.state.printer.toolhead?.max_velocity ?? 0
+        const liveVelocity = Math.abs(this.$store.state.printer.motion_report?.live_velocity?.toFixed(0)) ?? null
+
+        const speed = (requestedSpeed / 60) * speedFactor
+
+        if (!isNaN(liveVelocity)) return liveVelocity
+          else if (speed > maxVelocity) return maxVelocity
+          else return speed.toFixed(0)
+    }
+    
+    get reach_mid_speed(): number {
+        if (this.$store.state.gui.uiSettings.legacyDynamicSpeedometer ?? false) {
+            const max_velocity = this.$store.state.printer.toolhead?.max_velocity ?? 300
+        
+        if (max_velocity != 0 && Math.trunc(max_velocity / 3) < 80) return Math.trunc(max_velocity / 3)
+            else return 80
+            } else return 300
+        }
+    
+    get max_velocity_one_and_quarter(): number {
+        if (this.$store.state.gui.uiSettings.legacyDynamicSpeedometer ?? false) {
+            const max_velocity = Math.trunc(this.$store.state.printer.toolhead?.max_velocity ?? 300)
+            const max_velocity_one_and_quarter = Math.trunc(max_velocity / 1.5)
+            return max_velocity_one_and_quarter
+            } else return 150
+        }
+    
+    get get_angle_by_speed(): number {
+        if (!(this.$store.state.gui.uiSettings.legacyDynamicSpeedometer ?? false)) {
+        const current_speed = this.currentSpeed
+        const max_velocity = Math.trunc(this.$store.state.printer.toolhead?.max_velocity ?? 300)
+        const min_angle = -170
+        const max_angle = 80
+        const angle_diff = 250
+        var difference = 0
+          
+        if (!isNaN(current_speed)) difference = (Math.trunc(angle_diff / (Math.trunc(max_velocity * 0.8) / current_speed)) - 180)
+        
+        if (difference < min_angle) return min_angle
+        else if (difference > max_angle) return max_angle
+        else if (isNaN(difference) || (difference == null)) return 0
+        else return difference
+        } else return 0
+    
+    }
+
     mounted() {
         if (this.current_filename !== '') this.activeTab = 'status'
         if (!this.displayFilesTab) this.activeTab = 'history'
@@ -467,4 +601,11 @@ export default class StatusPanel extends Mixins(BaseMixin) {
 .theme--dark.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-badge > .v-icon {
     color: rgba(255, 255, 255, 0.6);
 }
+
+svg.speedometer {
+
+    --var-transform: rotate(-170deg)
+
+}
+
 </style>

@@ -3,6 +3,18 @@ html {
     scrollbar-color: #6b6b6b #272727;
 }
 
+:root {
+    --interface-font: Roboto, sans-serif;
+    --h1-font: var(--interface-font);
+    --h2-font: var(--interface-font);
+    --h3-font: var(--interface-font);
+    --h4-font: var(--interface-font);
+    --monospace-font: ui-monospace, Menlo, Consolas, Liberation Mono, monospace;
+}
+.v-application {
+    --panel-toolbar-icon-btn-width: 36px!important;
+}
+
 body {
     background: #121212;
 }
@@ -141,4 +153,58 @@ html.theme--light .os-theme-light > .os-scrollbar > .os-scrollbar-track > .os-sc
 
 html.theme--light .os-theme-light > .os-scrollbar > .os-scrollbar-track > .os-scrollbar-handle:hover {
     background: rgba(0, 0, 0, 0.55) !important;
+}
+
+/* workaround - make fonts vary by loose variable, it's unoptimized until i
+ decide to tamper to certain sources or fall into rabbit hole of vue */
+.v-application {
+    font-family: var(--interface-font)
+}
+.v-application .text-h1 {
+    font-family: var(--h1-font)!important
+}
+.v-application .text-body-1, .v-application .text-body-2, .v-application .caption, .v-application .subtitle-1, .v-application .subtitle-2, .vue-echarts-inner div, svg > g text {
+    font-family: var(--interface-font)!important
+}
+.v-application .text-h2 {
+    font-family: var(--h2-font)!important
+}
+.v-application .text-h3 {
+    font-family: var(--h3-font)!important
+}
+.v-application .text-h4, .v-application .text-h5, .v-application .text-h6 {
+    font-family: var(--h4-font)!important
+}
+.v-btn, .v-tab {
+    text-transform: initial;
+    letter-spacing: initial;
+    text-indent: initial
+}
+code, kbd, pre, samp, .cm-editor .cm-scroller {
+    font-family: var(--monospace-font)!important
+}
+
+/* unstable - remove ripple effect globally */
+.v-ripple__container {
+  display: none !important;
+}
+
+/* probably unstable changes */
+.v-toolbar__content .v-btn.v-btn--icon.v-size--default, .v-toolbar__extension .v-btn.v-btn--icon.v-size--default {
+    width: 36px!important;
+    height: 36px!important;
+    border-radius: 12px;
+    margin: 6px
+}
+
+/* macy transitions */
+
+.dialog-transition-enter, .dialog-transition-leave-to {
+  transform: scale(80%);
+}
+.scale-transition-enter, .scale-transition-leave, .scale-transition-leave-to {
+  transform: scale(80%);
+}
+.scale-transition-enter-active, .scale-transition-leave-active {
+  transition:.1s cubic-bezier(.25, .8, .5, 1) !important
 }

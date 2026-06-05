@@ -7,20 +7,30 @@
         :close-on-click="true"
         :close-on-content-click="false"
         origin="center center"
-        transition="slide-y-transition"
+                transition="oiwp-transition"
+                content-class="notifications"
         :min-width="isMobile ? '100%' : null">
-        <template #activator="{ on, attrs }">
-            <v-btn icon tile class="minwidth-0" v-bind="attrs" v-on="on">
-                <v-badge
-                    :content="notifications.length <= 9 ? notifications.length : '9+'"
-                    :value="notifications.length > 0"
-                    :color="colorBadge"
-                    overlap>
-                    <v-icon>{{ attrs['aria-expanded'] === 'false' ? mdiBellOutline : mdiBell }}</v-icon>
-                </v-badge>
-            </v-btn>
+        <template #activator="{ on: menu, attrs }">
+        <v-tooltip :disabled="boolMenu" bottom :open-on-click="false" :open-on-focus="false" z-index="255">
+            <template v-slot:activator="{ on: tooltip }">
+                <v-btn icon tile class="minwidth-0" v-bind="attrs" v-on="attrs['aria-expanded'] === 'false' ? {...tooltip, ...menu} : { ...menu }">
+                    <v-badge
+                        :content="notifications.length"
+                        :value="notifications.length > 0"
+                        :color="colorBadge"
+                        overlap>
+                        <v-icon>{{ attrs['aria-expanded'] === 'false' ? mdiBellOutline : mdiBell }}</v-icon>
+                    </v-badge>
+                </v-btn>
+            </template>
+            <span>
+            <div><template v-if="notifications.length > 0"> {{ $tc('App.TopBar.NewNotification', notifications.length, { number: notifications.length } ) }} </template> <template v-else> {{ $t('App.Notifications.NoNotification') }} </template> </div>
+            <div> <template v-if="existsHighAnnouncements" >  {{ $t('App.TopBar.NotificationImportant', { number: getHighAnnouncements.length })}} </template> </div>
+            <div> <template v-if="existsCriticalAnnouncements" >  {{ $t('App.TopBar.NotificationCritical', { number: getCriticalAnnouncements.length })}} </template> </div>
+            </span>
+            </v-tooltip>
         </template>
-        <v-card flat :min-width="300" :max-width="isMobile ? null : 400">
+        <v-card flat :min-width="300" :max-width="isMobile ? null : 400" class="notifications inner">
             <template v-if="notifications.length">
                 <overlay-scrollbars class="announcement-menu__scrollbar">
                     <v-card-text>
@@ -71,6 +81,14 @@ export default class TheNotificationMenu extends Mixins(BaseMixin) {
     get notifications() {
         return this.$store.getters['gui/notifications/getNotifications'] ?? []
     }
+    
+    get getCriticalAnnouncements() {
+        return this.notifications.filter((entry: GuiNotificationStateEntry) => entry.priority === 'high') ?? []
+    }
+    
+    get getHighAnnouncements() {
+        return this.notifications.filter((entry: GuiNotificationStateEntry) => entry.priority === 'high') ?? []
+    }
 
     get existsCriticalAnnouncements() {
         return this.notifications.filter((entry: GuiNotificationStateEntry) => entry.priority === 'critical').length > 0
@@ -106,5 +124,15 @@ export default class TheNotificationMenu extends Mixins(BaseMixin) {
 <style scoped>
 .announcement-menu__scrollbar {
     max-height: 500px;
+}
+
+    .notifications.oiwp-transition-enter-active, .notifications.oiwp-transition-leave-active {
+    right: 118px
+}
+    .notifications.oiwp-transition-enter, .notifications.oiwp-transition-leave-to {
+    left: calc(100% - 270px + 118px)!important;
+}
+    .notifications.oiwp-transition-enter-to, .notifications.oiwp-transition-leave {
+    
 }
 </style>

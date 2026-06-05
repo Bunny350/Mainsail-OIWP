@@ -59,7 +59,7 @@
             :color="color" />
         <v-menu v-model="showContextMenu" :position-x="contextMenuX" :position-y="contextMenuY" absolute offset-y>
             <v-list>
-                <v-list-item v-if="isHeater" :disabled="!isHeaterActive" @click="turnOffHeater">
+                <v-list-item v-if="isHeater && !(['printing'].includes(printer_state))" :disabled="!isHeaterActive" @click="turnOffHeater">
                     <v-icon left>{{ mdiSnowflake }}</v-icon>
                     {{ $t('Panels.TemperaturePanel.TurnHeaterOff') }}
                 </v-list-item>

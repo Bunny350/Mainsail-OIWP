@@ -150,14 +150,42 @@
                         @drop.prevent.stop="dragDropFilelist($event, item)">
                         <td class="file-list__select-td pr-0">
                             <v-simple-checkbox
-                                v-ripple
                                 :value="isSelected"
                                 class="pa-0 mr-0"
                                 @click.stop="select(!isSelected)" />
                         </td>
                         <td class="px-0 text-center" style="width: 32px">
-                            <v-icon v-if="item.isDirectory">{{ mdiFolder }}</v-icon>
-                            <v-icon v-if="!item.isDirectory">{{ mdiFile }}</v-icon>
+                            <template v-if="item.isDirectory">
+                            <v-icon v-if="item.filename.slice(0, 1) !== '.'">{{ mdiFolder }}</v-icon>
+                            <v-icon v-else> {{ mdiFolderHidden }} </v-icon>
+                            </template>
+                            <template v-if="!item.isDirectory">
+                            <template v-if="(item.filename.toLowerCase().endsWith('.svg') && (item.size < 256000)) || (['heic', 'png', 'jpeg', 'jpg', 'gif', 'bmp', 'tif'].includes(
+                            item.filename.split('.').pop()?.toLowerCase()) && (item.size < 2097152))">
+                                <div style="display: flex; align-items: center; justify-content: center;"> <img :src="imgPath + item.filename" width="32px" height="36px" style="object-fit: contain" /> </div>
+                            </template>
+                            <v-icon v-else-if="
+                                item.filename.endsWith('.bkp') ||
+                                item.filename.endsWith('.backup') ||
+                                item.filename.match(/^printer-\d{8}_\d{6}\.cfg$/) ||
+                                item.filename.match(/^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/)
+                                ">{{ mdiFileRestore }}</v-icon>
+                            <v-icon v-else-if="item.filename.endsWith('.cfg')">{{ klipperConfigFile }}</v-icon>
+                            <v-icon v-else-if="
+                                item.filename.endsWith('.log') ||
+                                item.filename.match(/\.log\.\d{4}-\d{2}-\d{2}$/)">{{ mdiNotebook }} </v-icon>
+                            <v-icon v-else-if="item.filename == 'moonraker.conf'">{{ moonrakerConfigFile }}</v-icon>
+                            <v-icon v-else-if="['heic', 'png', 'jpeg', 'jpg', 'gif', 'bmp', 'tif'].includes(
+                        item.filename.split('.').pop()?.toLowerCase())"> {{ mdiImage }} </v-icon>
+                        
+                        <v-icon v-else-if="['ai', 'svg', 'dxf'].includes(
+                        item.filename.split('.').pop()?.toLowerCase())"> {{ vectorFile }} </v-icon>
+                        <v-icon v-else-if="['f3d', 'f3z', 'igs', 'iges', 'step', 'scad'].includes(
+                        item.filename.split('.').pop()?.toLowerCase())"> {{ mdiFileCad }} </v-icon>
+                        <v-icon v-else-if="['zip', '7z', 'rar'].includes(
+                        item.filename.split('.').pop()?.toLowerCase())"> {{ mdiZipBox }} </v-icon>
+                        <v-icon v-else>{{ mdiFile }}</v-icon>
+                            </template>
                         </td>
                         <td class=" ">{{ item.filename }}</td>
                         <td class="text-no-wrap text-right">
@@ -186,13 +214,25 @@
         </panel>
         <v-menu v-model="contextMenu.shown" :position-x="contextMenu.x" :position-y="contextMenu.y" absolute offset-y>
             <v-list>
-                <v-list-item v-if="!contextMenu.item.isDirectory" @click="clickRow(contextMenu.item, true)">
-                    <v-icon class="mr-1">{{ mdiFileDocumentEditOutline }}</v-icon>
-                    {{
-                        contextMenu.item.permissions.includes('w')
-                            ? $t('Machine.ConfigFilesPanel.EditFile')
-                            : $t('Machine.ConfigFilesPanel.ShowFile')
-                    }}
+                <v-list-item v-if="!contextMenu.item.isDirectory && (!['zip', '7z', 'rar', 'f3d', 'f3z', 'igs', 'iges'].includes(contextMenu.item.filename.split('.').pop()?.toLowerCase()))" @click="clickRow(contextMenu.item, true)">
+                    <template v-if="['heic', 'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tif'].includes(
+                        contextMenu.item.filename.split('.').pop()?.toLowerCase())">
+                        <v-icon class="mr-1">{{ mdiImage }}</v-icon>
+                        {{ $t('Machine.ConfigFilesPanel.ViewImage') }}
+                    </template>
+                    <template v-else-if="['svg'].includes(
+                        contextMenu.item.filename.split('.').pop()?.toLowerCase())">
+                        <v-icon class="mr-1">{{ mdiVectorCurve }}</v-icon>
+                        {{ $t('Machine.ConfigFilesPanel.ViewVector') }}
+                    </template>
+                    <template v-else>
+                        <v-icon class="mr-1">{{ mdiFileDocumentEditOutline }}</v-icon>
+                        {{
+                            contextMenu.item.permissions.includes('w')
+                                ? $t('Machine.ConfigFilesPanel.EditFile')
+                                : $t('Machine.ConfigFilesPanel.ShowFile')
+                        }}
+                    </template>
                 </v-list-item>
                 <v-list-item v-if="!contextMenu.item.isDirectory" @click="downloadFile">
                     <v-icon class="mr-1">{{ mdiCloudDownload }}</v-icon>
@@ -242,6 +282,7 @@
             ">
             <panel
                 :title="dialogImage.item.name ?? ''"
+                :icon="imageFileTypeIcon"
                 card-class="maschine-configfiles-imageviewer-dialog"
                 style="position: relative">
                 <template #buttons>
@@ -482,16 +523,24 @@ import {
     mdiClose,
     mdiCog,
     mdiFolder,
+    mdiFolderHidden,
     mdiFolderUpload,
     mdiFile,
+    mdiFileCad,
+    mdiFileRestore,
     mdiFileDocumentEditOutline,
+    mdiImage,
     mdiCloudDownload,
+    mdiNotebook,
     mdiRenameBox,
     mdiDelete,
     mdiCloseThick,
     mdiLockOutline,
     mdiContentCopy,
+    mdiVectorCurve,
+    mdiZipBox,
 } from '@mdi/js'
+import { klipperConfigFile, moonrakerConfigFile, vectorFile } from '@/plugins/customIconsCommon'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
 import type { FocusableRef } from '@/types/vuetify'
 import type { LongpressEvent } from '@/directives/longpress'
@@ -548,15 +597,25 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     mdiClose = mdiClose
     mdiCog = mdiCog
     mdiFolder = mdiFolder
+    mdiFolderHidden = mdiFolderHidden
     mdiFolderUpload = mdiFolderUpload
     mdiFileDocumentEditOutline = mdiFileDocumentEditOutline
     mdiFile = mdiFile
+    mdiFileCad = mdiFileCad
+    mdiFileRestore = mdiFileRestore
+    mdiImage = mdiImage
     mdiCloudDownload = mdiCloudDownload
+    mdiNotebook = mdiNotebook
     mdiRenameBox = mdiRenameBox
     mdiDelete = mdiDelete
     mdiCloseThick = mdiCloseThick
     mdiLockOutline = mdiLockOutline
     mdiContentCopy = mdiContentCopy
+    mdiVectorCurve = mdiVectorCurve
+    mdiZipBox = mdiZipBox
+    klipperConfigFile = klipperConfigFile
+    moonrakerConfigFile = moonrakerConfigFile
+    vectorFile = vectorFile
 
     sortFiles = sortFiles
     formatFilesize = formatFilesize
@@ -805,6 +864,29 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
             { text: this.$t('Machine.ConfigFilesPanel.LastModified'), value: 'modified', align: 'right' },
         ]
     }
+    
+    get imgPath() {
+        const url = `${this.apiUrl}/server/files${this.absolutePath}/`
+        return url
+    }
+    
+    get imageFileTypeIcon() {
+        if (this.dialogImage.item.name != null) {
+            if (['heic', 'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tif'].includes(
+                                this.dialogImage.item.name.split('.').pop()?.toLowerCase())) return mdiImage
+            else if (['svg'].includes(
+                                this.dialogImage.item.name.split('.').pop()?.toLowerCase())) return mdiVectorCurve
+        }
+    }
+    
+    get fileIcon() {
+    
+        const klipperBackupFileMatcher = /^printer-\d{8}_\d{6}\.cfg$/
+        const crowsnestBackupFileMatcher = /^crowsnest\.conf\.\d{4}-\d{2}-\d{2}-\d{4}$/
+    
+        if (this.filename != null) console.log(this.filename)
+    
+    }
 
     get selectedFiles() {
         return this.$store.state.gui.view.configfiles.selectedFiles ?? []
@@ -926,7 +1008,41 @@ export default class ConfigFilesPanel extends Mixins(BaseMixin, ThemeMixin) {
     clickRow(item: FileStateFile, force = false) {
         if (this.contextMenu.shown && !force) return
         if (force) this.contextMenu.shown = false
-
+            if (!item.isDirectory) {
+                if (
+                    ['heic', 'png', 'jpeg', 'jpg', 'gif', 'bmp', 'tif', 'svg'].includes(
+                        item.filename.split('.').pop()?.toLowerCase() ?? ''
+                    )
+                ) {
+                    const url = `${this.apiUrl}/server/files${this.absolutePath}/${item.filename}?t=${Date.now()}`
+                    this.dialogImage.item.name = item.filename
+                    if (['svg'].includes(item.filename.split('.').pop()?.toLowerCase() ?? '')) {
+                        fetch(url)
+                            .then((res) => res.text())
+                            .then((svg) => {
+                                this.dialogImage.show = true
+                                this.dialogImage.item.svg = svg
+                            })
+                    } else {
+                        this.dialogImage.show = true
+                        this.dialogImage.item.url = url
+                    }
+                } else if (['zip', '7z', 'rar', 'f3d', 'f3z', 'igs', 'iges', '3mf', 'stl'].includes(
+                        item.filename.split('.').pop()?.toLowerCase() ?? '')) {
+                    this.startDownloadFile(item.filename)
+                } else {
+                    this.$store.dispatch('editor/openFile', {
+                        root: this.root,
+                        path: this.currentPath,
+                        filename: item.filename,
+                        size: item.size,
+                        permissions: item.permissions,
+                    })
+                }
+            } else {
+                this.currentPath += '/' + item.filename
+                this.currentPage = 1
+            }
         if (item.isDirectory) {
             this.currentPath += '/' + item.filename
             this.currentPage = 1

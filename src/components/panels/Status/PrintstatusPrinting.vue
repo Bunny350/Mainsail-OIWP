@@ -5,13 +5,15 @@
         <v-container class="py-0">
             <v-row class="text-center py-5" align="center">
                 <v-col class="col-3 pa-0">
-                    <template v-if="live_velocity !== null">
+                    <template v-if="!isNaN(live_velocity) && live_velocity !== null">
                         <v-tooltip top>
                             <template #activator="{ on, attrs }">
                                 <div v-bind="attrs" v-on="on">
                                     <strong>{{ $t('Panels.StatusPanel.Speed') }}</strong>
                                     <br />
-                                    <span class="text-no-wrap">{{ live_velocity }} mm/s</span>
+                                    <span class="text-no-wrap">
+                                    {{ live_velocity }} mm/s
+                                    </span>
                                 </div>
                             </template>
                             <span>{{ $t('Panels.StatusPanel.Requested') }}: {{ requested_speed + ' mm/s' }}</span>
@@ -30,7 +32,12 @@
                                 <strong>{{ $t('Panels.StatusPanel.Flow') }}</strong>
                                 <br />
                                 <span class="d-block text-center text-no-wrap">
-                                    {{ live_flow + ' mm&sup3;/s' }}
+                                    <template v-if="!isNaN(live_flow) && live_flow !== null">
+                                        {{ live_flow + ' mm&sup3;/s' }}
+                                        </template>
+                                    <template v-else>
+                                        {{ $t('Panels.StatusPanel.Unknown') }}
+                                    </template>
                                 </span>
                             </div>
                         </template>
@@ -61,7 +68,7 @@
                             <div v-bind="attrs" class="text-center" v-on="on">
                                 <strong>{{ $t('Panels.StatusPanel.Layer') }}</strong>
                                 <br />
-                                <span class="text-no-wrap">{{ current_layer }} of {{ max_layers }}</span>
+                                <span class="text-no-wrap">{{ current_layer }} {{ $t('Panels.StatusPanel.Of') }} {{ max_layers }}</span>
                             </div>
                         </template>
                         <span v-if="'object_height' in current_file && current_file.object_height > 0">

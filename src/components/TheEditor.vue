@@ -3,6 +3,7 @@
         <v-dialog
             v-model="show"
             persistent
+            no-click-animation
             fullscreen
             hide-overlay
             :transition="false"
@@ -46,7 +47,7 @@
                         {{ $t('Editor.SaveRestart') }}
                     </v-btn>
                     <v-btn v-if="isWriteable" icon tile @click="save(null)">
-                        <v-icon>{{ mdiContentSave }}</v-icon>
+                        <v-icon>{{ mdiTrayArrowDown }}</v-icon>
                     </v-btn>
                     <v-btn icon tile @click="close">
                         <v-icon>{{ mdiCloseThick }}</v-icon>
@@ -172,7 +173,7 @@ import type Codemirror from '@/components/inputs/Codemirror.vue'
 import {
     mdiClose,
     mdiCloseThick,
-    mdiContentSave,
+    mdiTrayArrowDown,
     mdiFileDocumentOutline,
     mdiFileDocumentEditOutline,
     mdiHelp,
@@ -202,7 +203,7 @@ export default class TheEditor extends Mixins(BaseMixin) {
      */
     mdiCloseThick = mdiCloseThick
     mdiHelp = mdiHelp
-    mdiContentSave = mdiContentSave
+    mdiTrayArrowDown = mdiTrayArrowDown
     mdiRestart = mdiRestart
     mdiClose = mdiClose
     mdiHelpCircle = mdiHelpCircle

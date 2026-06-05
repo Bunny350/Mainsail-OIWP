@@ -1,5 +1,5 @@
 <template>
-    <panel :icon="mdiTrayFull" :title="$t('JobQueue.JobQueue')" card-class="jobqueue-panel">
+    <panel :icon="jobsCount < 1 ? mdiTray : jobsCount === 1 ? tray1l : jobsCount === 2 ? tray2l : mdiTrayFull" :title="$t('JobQueue.JobQueue')" card-class="jobqueue-panel">
         <template #buttons>
             <v-btn
                 v-if="queueState === 'paused'"
@@ -57,6 +57,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import Panel from '@/components/ui/Panel.vue'
 import { mdiPlay, mdiPause, mdiTrayFull } from '@mdi/js'
+import { tray1l, tray2l } from '@/plugins/customIconsCommon'
 import JobqueueEntry from '@/components/panels/Status/JobqueueEntry.vue'
 import draggable from 'vuedraggable'
 import JobqueueEntrySum from '@/components/panels/Status/JobqueueEntrySum.vue'
@@ -68,11 +69,17 @@ export default class JobqueuePanel extends Mixins(BaseMixin) {
     mdiPlay = mdiPlay
     mdiPause = mdiPause
     mdiTrayFull = mdiTrayFull
+    tray1l = tray1l
+    tray2l = tray2l
 
     joblist = []
 
     get jobs() {
         return this.$store.getters['server/jobQueue/getJobs']
+    }
+    
+    get jobsCount() {
+        return this.$store.getters['server/jobQueue/getJobsCount']
     }
 
     get queueState() {

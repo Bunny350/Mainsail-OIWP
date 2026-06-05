@@ -6,14 +6,13 @@
             </v-icon>
         </template>
         <v-container class="version-container pa-0">
-            <div><img height="12" src="/img/logo.svg" alt="mainsail-logo" /></div>
-            <div>v{{ mainsailVersion }}</div>
-            <div>
-                <v-icon small class="moonraker-logo">{{ mdiMoonWaningCrescent }}</v-icon>
+            <div class="sub"><div class="logo"><img src="/img/logo.svg" alt="mainsail-logo" class="mainsail" /></div>
+            <div class="versionNumber">v{{ mainsailVersion }}</div></div>
+                        <div class="sub"><div class="logo"><v-icon small class="moonraker">{{ mdiMoonWaningCrescent }}</v-icon>
             </div>
-            <div>{{ moonrakerVersion }}</div>
-            <div><img height="12" src="/img/klipper.svg" class="klipper-logo" alt="klipper-logo" /></div>
-            <div>{{ klipperVersion }}</div>
+            <div class="versionNumber">{{ moonrakerVersion }}</div></div>
+                        <div class="sub"><div class="logo"><img src="/img/klipper.svg" class="klipper" alt="klipper-logo" /></div>
+            <div class="versionNumber">{{ klipperVersion }}</div></div>
         </v-container>
     </v-tooltip>
 </template>
@@ -45,15 +44,45 @@ export default class AboutDialog extends Mixins(BaseMixin) {
 </script>
 
 <style scoped>
-.klipper-logo {
-    transform: rotate(90deg);
+
+.logo {
+    background-color: var(--v-btn-text-primary);
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5.5px
+
 }
-.moonraker-logo {
+
+.versionNumber {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+
+.logo img {
+width: 12px;
+height: 12px
+}
+
+.logo .klipper {
+    /* transform: rotate(90deg); */
+}
+.logo .moonraker {
     transform: rotate(45deg);
     color: #ebc815;
 }
 .version-container {
-    display: grid;
-    grid-template-columns: 20px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center
+}
+.version-container .sub {
+    display: flex;
+    align-items: center;
+    height: 20px
 }
 </style>

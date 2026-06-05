@@ -50,7 +50,7 @@ export default class HistoryStatsMixin extends Mixins(HistoryMixin) {
             valueFilament: 0,
             valueTime: 0,
             itemStyle: {
-                opacity: 0.9,
+                opacity: 1.0,
                 color: '#616161',
                 borderColor: '#1E1E1E',
                 borderWidth: 2,
@@ -80,7 +80,7 @@ export default class HistoryStatsMixin extends Mixins(HistoryMixin) {
                 showInTable: !this.hidePrintStatus.includes(status),
                 value: filterdJobs.length,
                 itemStyle: {
-                    opacity: 0.9,
+                    opacity: 1.0,
                     color: this.getStatusColor(status),
                     borderColor: '#1E1E1E',
                     borderWidth: 2,

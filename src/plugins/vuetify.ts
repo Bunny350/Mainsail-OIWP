@@ -17,4 +17,7 @@ export default new Vuetify({
     breakpoint: {
         mobileBreakpoint: 768,
     },
+    global: {
+      ripple: false, // vuetify 3 exclusive, but mainsail runs on not just old but eol version of it, which is 2.
+    },
 })

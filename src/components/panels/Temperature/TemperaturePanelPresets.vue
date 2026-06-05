@@ -1,6 +1,7 @@
 <template>
-    <div style="height: 100%">
-        <v-menu v-if="presets.length" :offset-y="true" left>
+    <Transition name="scale">
+    <div style="height: 100%" v-if="!(['printing'].includes(printer_state))">
+        <v-menu v-if="presets.length" :offset-y="true" left ref="thePresetsButton" transition="oiwp-scale" content-class="temperature-presets" origin="90% top">
             <template #activator="{ on, attrs }">
                 <v-btn
                     text
@@ -9,12 +10,14 @@
                     v-bind="attrs"
                     :disabled="['printing', 'paused'].includes(printer_state)"
                     class="pa-1"
-                    v-on="on">
+                    v-on="on"
+                    @click="getMenuPosition">
                     <span class="d-none ml-1 d-md-block">{{ $t('Panels.TemperaturePanel.Presets') }}</span>
                     <v-icon class="d-md-none">{{ mdiFire }}</v-icon>
                     <v-icon>{{ mdiMenuDown }}</v-icon>
                 </v-btn>
             </template>
+            <v-item-group>
             <v-list dense class="py-0">
                 <v-list-item v-for="(preset, index) of presets" :key="index" link @click="preheat(preset)">
                     <div class="d-flex align-center _preset-title">
@@ -32,6 +35,7 @@
                     </div>
                 </v-list-item>
             </v-list>
+            </v-item-group>
         </v-menu>
         <v-btn
             v-else
@@ -53,6 +57,7 @@
             :cancel-button-text="$t('Buttons.No')"
             @action="cooldown" />
     </div>
+    </Transition>
 </template>
 
 <script lang="ts">
@@ -62,6 +67,10 @@ import BaseMixin from '@/components/mixins/base'
 import { GuiPresetsStatePreset } from '@/store/gui/presets/types'
 import { mdiFire, mdiMenuDown, mdiSnowflake } from '@mdi/js'
 import ConfirmationDialog from '@/components/dialogs/ConfirmationDialog.vue'
+import { ref } from 'vue';
+
+const thePresetsButton = ref(null);
+
 
 @Component({
     components: { ConfirmationDialog },
@@ -131,6 +140,33 @@ export default class TemperaturePanelPresets extends Mixins(BaseMixin) {
         this.$store.dispatch('server/addEvent', { message: this.cooldownGcode, type: 'command' })
         this.$socket.emit('printer.gcode.script', { script: this.cooldownGcode })
     }
+    
+    // here
+    getMenuPosition(): void {
+            this.$nextTick(() => {
+            const contentEl = this.$refs.thePresetsButton.$el;
+              if (contentEl) {
+                const menurect = contentEl.getBoundingClientRect();
+                this.menuPosition = { top: menurect.top, left: menurect.left };
+                console.log("name", this.$refs.thePresetsButton.$el)
+                console.log('Menu position:', this.menuPosition);
+                console.log('Menu position2:', this.$refs.thePresetsButton.$el.getBoundingClientRect().left);
+              }
+              setTimeout(() => {
+            const spineBreaker = document.getElementsByClassName("temperature-presets");
+            if (spineBreaker) {
+            const menurect = spineBreaker[0].getBoundingClientRect();
+                this.menuPosition = { top: menurect.top, left: menurect.left, right: menurect.right };
+                console.log("name", spineBreaker)
+                console.log('Menu position:', this.menuPosition);
+                            spineBreaker[0].style.setProperty('--left-forced', spineBreaker[0].style.left)
+                            spineBreaker[0].style.setProperty('--right-forced', (window.innerWidth - (menurect.left + menurect.width)) + "px")
+                            spineBreaker[0].style.setProperty('--left-transitioning', (menurect.left + (menurect.width - 48)) + "px")
+                }
+                }, 40)
+          })
+      }
+    
 }
 </script>
 

@@ -11,7 +11,7 @@
 }
 
 .v-toast__text {
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--interface-font), sans-serif
 }
 
 .fullscreenUpload--active .v-toast--bottom {

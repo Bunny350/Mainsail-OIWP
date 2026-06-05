@@ -2,7 +2,7 @@
 
 <template>
     <div>
-        <v-dialog v-model="showDialog" width="900" persistent :fullscreen="isMobile">
+        <v-dialog v-model="showDialog" width="900" persistent no-click-animation :fullscreen="isMobile">
             <panel
                 :title="$t('Panels.StatusPanel.ExcludeObject.ExcludeObject')"
                 :icon="mdiSelectionRemove"

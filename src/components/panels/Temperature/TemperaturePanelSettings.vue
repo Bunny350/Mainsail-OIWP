@@ -1,5 +1,5 @@
 <template>
-    <v-menu :offset-y="true" :close-on-content-click="false" :title="$t('Panels.TemperaturePanel.SetupTemperatures')">
+    <v-menu :offset-y="true" :close-on-content-click="false" :title="$t('Panels.TemperaturePanel.SetupTemperatures')" left transition="oiwp-scale" origin="90% top">
         <template #activator="{ on, attrs }">
             <v-btn icon tile v-bind="attrs" v-on="on">
                 <v-icon small>{{ mdiCog }}</v-icon>

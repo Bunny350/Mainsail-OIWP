@@ -1,12 +1,17 @@
 <template>
-    <v-dialog v-model="showDialog" width="400" :fullscreen="isMobile">
+    <v-dialog v-model="showDialog" width="400" :fullscreen="isMobile" :persistent="persistent">
         <panel card-class="confirm-top-corner-menu-dialog" :icon="iconToUse" :title="title" :margin-bottom="false">
             <template #buttons>
                 <v-btn icon tile @click="close">
                     <v-icon>{{ mdiCloseThick }}</v-icon>
                 </v-btn>
             </template>
-            <v-card-text>{{ text }}</v-card-text>
+            <v-card-text>{{ text }}
+            <template v-if="list">
+                <ul style="max-height: 250px; overflow-y: scroll">
+                <li v-for="item in list">{{ item.filename }}</li>
+                </ul>
+            </template></v-card-text>
             <v-card-actions>
                 <v-spacer />
                 <v-btn text @click="close">{{ cancelButtonComputed }}</v-btn>
@@ -30,8 +35,11 @@ export default class ConfirmationDialog extends Mixins(BaseMixin) {
     mdiCloseThick = mdiCloseThick
 
     @VModel({ type: Boolean }) showDialog!: boolean
+    @Prop({ default: false }) persistent!: boolean
     @Prop({ type: String, required: true }) title!: string
     @Prop({ type: String, required: true }) text!: string
+    @Prop({ type: Array, required: false }) list!: string
+    @Prop({ type: String, required: false }) itemCond!: string
     @Prop({ type: String, required: true }) actionButtonText!: string
     @Prop({ type: String, default: '' }) cancelButtonText!: string
     @Prop({ type: String, default: 'error' }) actionButtonColor!: string

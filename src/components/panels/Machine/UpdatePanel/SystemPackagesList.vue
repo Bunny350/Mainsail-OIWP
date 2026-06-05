@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="showDialog" persistent max-width="800">
+    <v-dialog v-model="showDialog" max-width="800">
         <panel
             :title="$t('Machine.UpdatePanel.UpgradeableSystemPackages')"
             :icon="mdiPackageVariantClosed"

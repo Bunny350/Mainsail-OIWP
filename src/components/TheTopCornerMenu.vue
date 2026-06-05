@@ -1,12 +1,17 @@
 <template>
     <div>
-        <v-menu v-model="showMenu" bottom left :offset-y="true" :close-on-content-click="false">
-            <template #activator="{ on, attrs }">
-                <v-btn icon tile v-bind="attrs" v-on="on">
-                    <v-icon>{{ mdiPowerStandby }}</v-icon>
-                </v-btn>
+        <v-menu v-model="showMenu" bottom left :offset-y="true" :close-on-content-click="false"     transition="oiwp-transition" content-class="power-options">
+            <template #activator="{ on: menu, attrs }">
+                <v-tooltip :disabled="showMenu" bottom :open-on-click="false" :open-on-focus="false" z-index="255">
+                    <template v-slot:activator="{ on: tooltip }">
+                        <v-btn icon tile v-bind="attrs" v-on="{...menu, ...tooltip}">
+                            <v-icon>{{ mdiPowerStandby }}</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{$t('App.TopBar.PowerAndServices')}}</span>
+                </v-tooltip>
             </template>
-            <v-list dense>
+            <v-list dense class="power-options inner">
                 <template v-if="klipperState !== 'disconnected'">
                     <v-subheader class="" style="height: auto">
                         {{ $t('App.TopCornerMenu.KlipperControl') }}
@@ -271,3 +276,19 @@ export default class TheTopCornerMenu extends Mixins(BaseMixin, ServiceMixins) {
     }
 }
 </script>
+
+<style scoped>
+    .power-options.inner {
+    min-width: max-content
+}
+    .power-options.oiwp-transition-enter-active, .power-options.oiwp-transition-leave-active {
+    right: 22px
+}
+    .power-options.oiwp-transition-enter, .power-options.oiwp-transition-leave-to {
+    left: calc(100% - 150px + 88px)!important;
+}
+    .power-options.oiwp-transition-enter-to, .power-options.oiwp-transition-leave {
+    
+}
+
+</style>

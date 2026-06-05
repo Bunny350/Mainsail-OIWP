@@ -12,8 +12,12 @@
             :style="additionalStyle">
             <slot name="buttons-left" />
             <v-toolbar-title class="d-flex align-center">
-                <slot v-if="hasIconSlot" name="icon" />
-                <v-icon v-if="icon !== null && !hasIconSlot" left>{{ icon }}</v-icon>
+                <div style="width: 30px; display: inline-flex;" class="mr-2">
+                    <transition name="scale" mode="out-in">
+                        <slot v-if="hasIconSlot" name="icon" />
+                        <v-icon v-if="icon !== null && !hasIconSlot" left>{{ icon }}</v-icon>
+                    </transition>
+                </div>
                 <span v-if="title" class="subheading">{{ title }}</span>
             </v-toolbar-title>
             <slot name="buttons-title" />
@@ -54,6 +58,7 @@ export default class Panel extends Mixins(BaseMixin) {
     @Prop({ required: true }) declare readonly cardClass: string
     @Prop({ default: '' }) declare readonly toolbarColor: string
     @Prop({ default: '' }) declare readonly toolbarClass: string
+    @Prop({ default: '' }) declare readonly multipleIcons: boolean
     @Prop({ default: false }) declare readonly loading: boolean
     @Prop({ default: true }) declare readonly marginBottom: boolean
     @Prop({ default: false }) declare readonly hideButtonsOnCollapse: boolean

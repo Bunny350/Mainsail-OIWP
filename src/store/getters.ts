@@ -11,7 +11,11 @@ export const getters: GetterTree<RootState, RootState> = {
 
     getTitle: (state, getters) => {
         if (!state.socket?.isConnected) return 'Mainsail'
-        if (state.server?.klippy_state !== 'ready') return i18n.t('App.Titles.Error')
+        if (state.server?.klippy_state !== 'ready') {
+            let output = i18n.t('App.Titles.Error')
+            if (state.gui?.general.printername) output += ` - ${state.gui?.general.printername}`
+            return output
+        }
 
         // get printer_state
         let printer_state = state.printer?.print_stats?.state ?? ''
@@ -20,7 +24,15 @@ export const getters: GetterTree<RootState, RootState> = {
             printer_state = 'printing'
 
         // return pause title
-        if (printer_state === 'paused') return i18n.t('App.Titles.Pause')
+        if (state.printer?.print_stats?.state === 'paused')  {
+            let output =  i18n.t('App.Titles.Pause', {
+            filename: state.printer.print_stats.filename,
+            })
+
+            // add printer name to title if it exists
+            if (state.gui?.general.printername) output += ` - ${state.gui?.general.printername}`
+            return output
+        }
 
         // return complete title
         if (state.printer?.print_stats?.state === 'complete') {
@@ -47,7 +59,7 @@ export const getters: GetterTree<RootState, RootState> = {
                 })
 
                 // add printer name to title if it exists
-                if (state.gui?.general.printername) output += `- ${state.gui?.general.printername}`
+                if (state.gui?.general.printername) output += ` - ${state.gui?.general.printername}`
 
                 return output
             }
@@ -58,7 +70,7 @@ export const getters: GetterTree<RootState, RootState> = {
             })
 
             // add printer name to title if it exists
-            if (state.gui?.general.printername) output += `- ${state.gui?.general.printername}`
+            if (state.gui?.general.printername) output += ` - ${state.gui?.general.printername}`
 
             return output
         }

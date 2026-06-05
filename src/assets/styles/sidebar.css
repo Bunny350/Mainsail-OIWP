@@ -69,7 +69,7 @@ nav ul.navi .nav-link > i.v-icon {
 nav ul.navi .nav-link > span.nav-title {
     line-height: 30px;
     font-weight: 600;
-    text-transform: uppercase;
+    
     white-space: nowrap;
     letter-spacing: 1px;
 }

@@ -82,7 +82,7 @@ export default class TempChart extends Mixins(BaseMixin, ThemeMixin) {
         return {
             animation: false,
             trigger: 'axis',
-            backgroundColor: this.bgColor(1),
+            backgroundColor: this.bgColor(0.6),
             borderWidth: 0,
             textStyle: {
                 color: this.fgColorHi,

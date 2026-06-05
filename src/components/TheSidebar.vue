@@ -14,19 +14,6 @@
 
         <overlay-scrollbars class="nav-scrollbar">
             <v-list class="pr-0 pt-0 ml-0">
-                <v-list-item
-                    v-if="isMobile"
-                    router
-                    to="/"
-                    :class="mobileLogoClass"
-                    :style="`height: ${topbarHeight}px`"
-                    :ripple="false">
-                    <img v-if="sidebarLogo" :src="sidebarLogo" :style="logoCssVars" class="nav-logo" alt="Logo" />
-                    <mainsail-logo v-else :color="logoColor" :style="logoCssVars" class="nav-logo" :ripple="false" />
-                    <span v-if="navigationStyle !== 'iconsOnly'" class="text-h6 font-weight-regular text-truncate">
-                        {{ printerName }}
-                    </span>
-                </v-list-item>
                 <sidebar-item v-for="(category, index) in visibleNaviPoints" :key="index" :item="category" />
             </v-list>
         </overlay-scrollbars>
@@ -81,14 +68,14 @@ export default class TheSidebar extends Mixins(NavigationMixin, BaseMixin, Theme
     }
 
     get boolNaviTemp(): boolean {
-        return !this.isMobile && this.$vuetify.breakpoint.mdAndDown
+        return this.$vuetify.breakpoint.mdAndDown
     }
 
     get sidebarCssVars(): Record<string, string> {
         if (!this.boolNaviTemp) return {}
 
         return {
-            top: `${topbarHeight}px !important`,
+            top: `${topbarHeight}px`,
             'padding-bottom': `${topbarHeight}px`,
         }
     }

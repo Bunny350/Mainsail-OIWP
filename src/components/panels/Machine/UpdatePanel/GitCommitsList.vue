@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="showDialog" persistent :max-width="800" :fullscreen="isMobile">
+    <v-dialog v-model="showDialog" :max-width="800" :fullscreen="isMobile">
         <panel
             :title="$t('Machine.UpdatePanel.Commits')"
             :icon="mdiUpdate"

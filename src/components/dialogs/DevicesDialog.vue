@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="showDialog" width="500" persistent :fullscreen="isMobile">
+    <v-dialog v-model="showDialog" width="500" persistent no-click-animation :fullscreen="isMobile">
         <panel
             id="devices-dialog"
             :title="$t('DevicesDialog.Headline')"

@@ -118,6 +118,9 @@ export interface GuiState {
         dashboardFilesFilter: GuiStateUiSettingsDashboardFilesFilter[]
         dashboardHistoryLimit: number
         hideOtherInstances: boolean
+        forceReducedMotion: boolean
+        forceReducedTransparency: boolean
+        legacyDynamicSpeedometer: boolean
     }
     view: {
         afc: {

@@ -56,6 +56,35 @@
                     </v-menu>
                 </settings-row>
                 <v-divider class="my-2" />
+                <div class="d-flex align-center">
+                    <v-icon style="opacity: 0.7">{{ mdiHuman }}</v-icon>
+                    <v-card-title class="mx-n2">
+                        {{ $t('Settings.UiSettingsTab.Accessibility') }}
+                    </v-card-title>
+                    <v-divider class="ml-3"></v-divider>
+                </div>
+                <settings-row
+                    :title="$t('Settings.UiSettingsTab.ForceReducedMotion.name')"
+                    :sub-title="$t('Settings.UiSettingsTab.ForceReducedMotion.description')"
+                    :has-tooltip="true"
+                    :tooltip-description="$t('Settings.UiSettingsTab.ForceReducedMotion.explaination')"
+                    :dynamic-slot-width="true">
+                    <v-switch v-model="forceReducedMotion" hide-details class="mt-0" />
+                </settings-row>
+                <v-divider class="my-2" />
+                <settings-row
+                    :title="$t('Settings.UiSettingsTab.ForceReducedTransparency')"
+                    :sub-title="$t('Settings.UiSettingsTab.ForceReducedTransparencyDescription')"
+                    :dynamic-slot-width="true">
+                    <v-switch v-model="forceReducedTransparency" hide-details class="mt-0" />
+                </settings-row>
+                <div class="d-flex align-center">
+                    <v-icon style="opacity: 0.7">{{ mdiPrinter3d }}</v-icon>
+                    <v-card-title class="mx-n2">
+                        {{ $t('Settings.UiSettingsTab.Printing') }}
+                    </v-card-title>
+                    <v-divider class="ml-3"></v-divider>
+                </div>
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.GcodeThumbnails')"
                     :sub-title="$t('Settings.UiSettingsTab.GcodeThumbnailsDescription')"
@@ -159,28 +188,24 @@
                 <v-divider v-show="lockSliders" class="my-2" />
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.ConfirmOnEmergencyStop')"
-                    :sub-title="$t('Settings.UiSettingsTab.ConfirmOnEmergencyStopDescription')"
                     :dynamic-slot-width="true">
                     <v-switch v-model="confirmOnEmergencyStop" hide-details class="mt-0" />
                 </settings-row>
                 <v-divider class="my-2" />
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.ConfirmOnCoolDown')"
-                    :sub-title="$t('Settings.UiSettingsTab.ConfirmOnCoolDownDescription')"
                     :dynamic-slot-width="true">
                     <v-switch v-model="confirmOnCoolDown" hide-details class="mt-0" />
                 </settings-row>
                 <v-divider class="my-2" />
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.ConfirmOnPowerDeviceChange')"
-                    :sub-title="$t('Settings.UiSettingsTab.ConfirmOnPowerDeviceChangeDescription')"
                     :dynamic-slot-width="true">
                     <v-switch v-model="confirmOnPowerDeviceChange" hide-details class="mt-0" />
                 </settings-row>
                 <v-divider class="my-2" />
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.ConfirmOnCancelJob')"
-                    :sub-title="$t('Settings.UiSettingsTab.ConfirmOnCancelJobDescription')"
                     :dynamic-slot-width="true">
                     <v-switch v-model="confirmOnCancelJob" hide-details class="mt-0" />
                 </settings-row>
@@ -238,10 +263,24 @@
                 <v-divider class="my-2" />
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.DisableFanAnimation')"
-                    :sub-title="$t('Settings.UiSettingsTab.DisableFanAnimationDescription')"
                     :dynamic-slot-width="true">
                     <v-switch v-model="disableFanAnimation" hide-details class="mt-0" />
                 </settings-row>
+                <v-divider class="my-2" />
+                <settings-row
+                    :title="$t('Settings.UiSettingsTab.UseLegacyDynSpeedometer.name')"
+                    :sub-title="$t('Settings.UiSettingsTab.UseLegacyDynSpeedometer.description')"
+                    :has-tooltip="true"
+                    :tooltip-description="$t('Settings.UiSettingsTab.UseLegacyDynSpeedometer.explaination')"
+                    :tooltip-after-icon1="$t('Settings.UiSettingsTab.UseLegacyDynSpeedometer.explainationMidway')"
+                    :tooltip-after-icon2="$t('Settings.UiSettingsTab.UseLegacyDynSpeedometer.explainationAfter')"
+                    :tooltip-icon1="speedmeterPointGlitched"
+                    :tooltip-icon2="mdiSpeedometer"
+                    :mode-watch="legacyDynamicSpeedometer"
+                    :dynamic-slot-width="true">
+                    <v-switch v-model="legacyDynamicSpeedometer" hide-details class="mt-0" />
+                </settings-row>
+                
                 <v-divider class="my-2" />
                 <settings-row
                     :title="$t('Settings.UiSettingsTab.ManualProbeDialog')"
@@ -293,7 +332,7 @@
                         :max="10"
                         :step="1"
                         :label="
-                            $t('Settings.UiSettingsTab.DashboardFilesLimitLabel', { count: dashboardFilesLimit })
+                            $tc('Settings.UiSettingsTab.DashboardFilesLimitLabel', dashboardFilesLimit, { count: dashboardFilesLimit })
                         " />
                 </settings-row>
                 <v-divider class="my-2" />
@@ -319,7 +358,7 @@
                         :max="10"
                         :step="1"
                         :label="
-                            $t('Settings.UiSettingsTab.DashboardHistoryLimitLabel', { count: dashboardHistoryLimit })
+                            $tc('Settings.UiSettingsTab.DashboardHistoryLimitLabel', dashboardHistoryLimit, { count: dashboardHistoryLimit })
                         " />
                 </settings-row>
                 <v-divider class="my-2" />
@@ -341,7 +380,8 @@ import BaseMixin from '@/components/mixins/base'
 import SettingsRow from '@/components/settings/SettingsRow.vue'
 import { defaultLogoColor, defaultPrimaryColor, defaultBigThumbnailBackground, themes } from '@/store/variables'
 import { Debounce } from 'vue-debounce-decorator'
-import { mdiRestart, mdiTimerOutline } from '@mdi/js'
+import { mdiRestart, mdiTimerOutline, mdiSpeedometer, mdiHuman, mdiPrinter3d } from '@mdi/js'
+import { speedmeterPointGlitched } from '@/plugins/customIconsCommon'
 import { ServerPowerStateDevice } from '@/store/server/power/types'
 import ThemeMixin from '@/components/mixins/theme'
 import { clearColorObject, ColorPickerValue } from '@/plugins/helpers'
@@ -352,12 +392,17 @@ import { clearColorObject, ColorPickerValue } from '@/plugins/helpers'
 export default class SettingsUiSettingsTab extends Mixins(BaseMixin, ThemeMixin) {
     mdiRestart = mdiRestart
     mdiTimerOutline = mdiTimerOutline
+    mdiHuman = mdiHuman
+    mdiPrinter3d = mdiPrinter3d
+    mdiSpeedometer = mdiSpeedometer
+    speedmeterPointGlitched = speedmeterPointGlitched
 
     defaultBigThumbnailBackground = defaultBigThumbnailBackground
 
     get mode() {
         return this.$store.state.gui.uiSettings.mode
     }
+    
 
     set mode(newVal) {
         this.$store.dispatch('gui/saveSetting', { name: 'uiSettings.mode', value: newVal })
@@ -709,8 +754,32 @@ export default class SettingsUiSettingsTab extends Mixins(BaseMixin, ThemeMixin)
         return this.$store.state.gui.uiSettings.hideOtherInstances ?? false
     }
 
+    get forceReducedMotion() {
+        return this.$store.state.gui.uiSettings.forceReducedMotion ?? false
+    }
+    
+    get forceReducedTransparency() {
+        return this.$store.state.gui.uiSettings.forceReducedTransparency ?? false
+    }
+    
+    get legacyDynamicSpeedometer() {
+        return this.$store.state.gui.uiSettings.legacyDynamicSpeedometer ?? false
+    }
+
     set hideOtherInstances(newVal) {
         this.$store.dispatch('gui/saveSetting', { name: 'uiSettings.hideOtherInstances', value: newVal })
+    }
+    
+    set forceReducedMotion(newVal) {
+        this.$store.dispatch('gui/saveSetting', { name: 'uiSettings.forceReducedMotion', value: newVal })
+    }
+    
+    set forceReducedTransparency(newVal) {
+        this.$store.dispatch('gui/saveSetting', { name: 'uiSettings.forceReducedTransparency', value: newVal })
+    }
+    
+    set legacyDynamicSpeedometer(newVal) {
+        this.$store.dispatch('gui/saveSetting', { name: 'uiSettings.legacyDynamicSpeedometer', value: newVal })
     }
 
     @Debounce(500)

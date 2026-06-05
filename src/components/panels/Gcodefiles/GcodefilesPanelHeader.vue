@@ -33,6 +33,9 @@
                 v-model="showDeleteSelectedDialog"
                 :title="$t('Files.Delete')"
                 :text="deleteSelectedText"
+                :list="fileQuantity"
+                item-cond="filename"
+                persistent
                 :action-button-text="$t('Buttons.Delete')"
                 @action="deleteSelectedFiles" />
             <input
@@ -98,9 +101,15 @@ export default class GcodefilesPanelHeader extends Mixins(BaseMixin, GcodefilesM
     get deleteSelectedText(): string {
         if (this.selectedFiles.length === 1) {
             return this.$t('Files.DeleteSingleFileQuestion', { name: this.selectedFiles[0].filename }).toString()
+        } else {
+        const deleteFileQuestion = this.$t('Files.DeleteSelectedQuestion', { count: this.selectedFiles.length }).toString()
+        return deleteFileQuestion
         }
-
-        return this.$t('Files.DeleteSelectedQuestion', { count: this.selectedFiles.length }).toString()
+    }
+    
+    get fileQuantity() {
+            if (this.selectedFiles.length > 1) return this.selectedFiles
+              else return null
     }
 
     downloadSelectedFiles() {

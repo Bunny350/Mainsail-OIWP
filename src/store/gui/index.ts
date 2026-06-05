@@ -189,6 +189,9 @@ export const getDefaultState = (): GuiState => {
             dashboardFilesFilter: ['new', 'failed', 'completed'],
             dashboardHistoryLimit: 5,
             hideOtherInstances: false,
+            forceReducedMotion: false,
+            forceReducedTransparency: false,
+            legacyDynamicSpeedometer: false,
         },
         view: {
             afc: {

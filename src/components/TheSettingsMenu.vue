@@ -1,12 +1,18 @@
 <template>
     <div>
-        <v-btn icon tile @click="showSettings = true">
+            <v-tooltip :disabled="boolMenu" bottom :open-on-click="false" :open-on-focus="false" z-index="255">
+            <template v-slot:activator="{ on: tooltip }">
+        <v-btn icon tile v-on="{...tooltip}" @click="showSettings = true">
             <v-icon>{{ mdiCogs }}</v-icon>
         </v-btn>
+        </template>
+        <span>{{ $t('Settings.InterfaceSettings') }}</span>
+        </v-tooltip>
         <v-dialog
             v-model="showSettings"
             width="900"
             persistent
+            no-click-animation
             :fullscreen="isMobile"
             scrollable
             @keydown.esc="showSettings = false">

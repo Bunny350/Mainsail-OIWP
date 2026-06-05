@@ -26,7 +26,7 @@
                 :disabled="printerIsPrinting"
                 :loading="loadings.includes('topbarSaveConfig')"
                 @click="saveConfig">
-                <v-icon class="d-md-none">{{ mdiContentSave }}</v-icon>
+                <v-icon class="mr-md-2">{{ mdiContentSave }}</v-icon>
                 <span class="d-none d-md-inline">{{ $t('App.TopBar.SAVE_CONFIG') }}</span>
             </v-btn>
             <v-btn
@@ -341,9 +341,7 @@ export default class TheTopbar extends Mixins(BaseMixin, ThemeMixin) {
     width: var(--topbar-icon-btn-width) !important;
 }
 /*noinspection CssUnusedSymbol*/
-@media (min-width: 768px) {
     header.topbar {
-        z-index: 8 !important;
+        z-index: 8
     }
-}
 </style>

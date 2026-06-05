@@ -1,0 +1,55 @@
+<template>
+<svg
+   viewBox="0 0 24 24"
+   width="24"
+   height="24"
+   version="1.1"
+   id="svg184"
+   class="speedometer"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs188">
+    <mask
+       maskUnits="userSpaceOnUse"
+       id="mask1170">
+      <g
+         id="g1176">
+        <path
+           d="m 4,13 c 0,2.21 0.89,4.21 2.34,5.65 h 0.01 c 0.39,0.39 0.39,1.02 0,1.41 -0.39,0.39 -1.03,0.39 -1.42,0.01 v 0 C 3.12,18.26 2,15.76 2,13 2,7.4771525 6.4771525,3 12,3 c 5.522847,0 10,4.4771525 10,10 0,2.76 -1.12,5.26 -2.93,7.07 v 0 c -0.39,0.38 -1.03,0.38 -1.42,-0.01 -0.39,-0.39 -0.39,-1.02 0,-1.41 h 0.01 C 19.11,17.21 20,15.21 20,13 20,8.581722 16.418278,5 12,5 7.581722,5 4,8.581722 4,13 Z"
+           id="path1172"
+           style="fill:#ffffff;stroke:#ffffff;stroke-width:2;stroke-dasharray:none"
+           mask="none"
+           />
+        <path
+           d="m 12,16 c -1.656854,0 -3,-1.343146 -3,-3 0,-1.12 0.61,-2.1 1.5,-2.61 l 9.71,-5.62 -5.53,9.58 C 14.18,15.33 13.17,16 12,16"
+           id="path1174"
+           style="display:inline;stroke:#000000;stroke-width:4;stroke-linejoin:round;stroke-dasharray:none"
+           inkscape:label="path519-1"
+           transform="rotate(0, 12, 13)"
+           class="point"/>
+      </g>
+    </mask>
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="point">
+     <path
+     d="m 4,13 c 0,2.21 0.89,4.21 2.34,5.65 h 0.01 c 0.39,0.39 0.39,1.02 0,1.41 -0.39,0.39 -1.03,0.39 -1.42,0.01 v 0 C 3.12,18.26 2,15.76 2,13 2,7.4771525 6.4771525,3 12,3 c 5.522847,0 10,4.4771525 10,10 0,2.76 -1.12,5.26 -2.93,7.07 v 0 c -0.39,0.38 -1.03,0.38 -1.42,-0.01 -0.39,-0.39 -0.39,-1.02 0,-1.41 h 0.01 C 19.11,17.21 20,15.21 20,13 20,8.581722 16.418278,5 12,5 7.581722,5 4,8.581722 4,13 Z"
+     id="path182"
+     style="fill:currentColor"
+     mask="url(#mask1170)"
+     inkscape:label="path182"
+     clip-path="none" />
+     <path
+     d="m 12,16 c -1.656854,0 -3,-1.343146 -3,-3 0,-1.12 0.61,-2.1 1.5,-2.61 l 9.71,-5.62 -5.53,9.58 C 14.18,15.33 13.17,16 12,16"
+     id="path519"
+     style="display:inline;fill:currentColor"
+     transform="rotate(0, 12, 13)"
+     class="point" />
+     
+  </g>
+</svg>
+
+</template>

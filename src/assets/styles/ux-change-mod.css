@@ -1,0 +1,223 @@
+.v-overlay.v-overlay--active, .v-overlay__scrim, .v-card.v-card--flat, header.v-app-bar.v-toolbar.v-sheet, .fullscreen-upload__dragzone {
+backdrop-filter: blur(6px);
+}
+.theme--dark.v-card.v-sheet:not(.panel) {
+  background-color: rgba(30, 30, 30, 0.8)
+}
+
+.theme--dark.v-app-bar.v-toolbar.v-sheet, .theme--dark.v-list {
+  background-color: rgba(30, 30, 30, 0.8);
+}
+
+.theme--light.v-app-bar.v-toolbar.v-sheet, .theme--light.v-list {
+  background-color: rgba(245, 245, 245, 0.7);
+}
+
+.v-tooltip__content {
+  backdrop-filter: blur(4px);
+}
+.theme--dark.v-tooltip__content {
+    background-color: #616161b3
+}
+.v-tooltip__content.menuable__content__active {
+  opacity: 1.0
+}
+
+.v-menu__content {
+  backdrop-filter: blur(4px);
+}
+
+.echarts-tooltip {
+  backdrop-filter: blur(2px)
+}
+
+.v-card__actions .v-btn.v-btn--text.v-size--default {
+  flex-grow: 100 !important
+}
+.v-dialog > .v-card > .v-card__actions {
+    padding: 8px;
+}
+.v-dialog {
+  border-radius: 32px;
+}
+
+.v-dialog > .v-card.v-sheet > div.v-card__actions > button.v-btn.v-btn--text.theme--dark.v-size--default:first-of-type {
+  border-radius: 0px 0px 0px 24px;
+}
+.v-dialog > .v-card.v-sheet > div.v-card__actions > button.v-btn.v-btn--text.theme--dark.v-size--default:last-of-type {
+  border-radius: 0px 0px 24px 0px;
+}
+
+/* emergency stop button redesign */
+button.emergency-button.v-btn {
+  color: #fff !important
+}
+button.emergency-button.v-btn > span.v-btn__content {
+  background-color: var(--v-error-base);
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 16px;
+  border-width: 6px;
+  border-color: rgba(255, 255, 255, 0);
+  border-style: solid;
+  transition: border-width 0.1s, border-color 0.1s, padding 0.1s
+}
+
+button.emergency-button.v-btn:hover > span.v-btn__content {
+  border-color: rgba(255, 255, 255, 0.8)
+}
+
+button.emergency-button.v-btn:active > span.v-btn__content {
+  border-color: rgba(255, 255, 255, 0.8);
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-width: 0px;
+}
+
+.dialog-transition-enter, .dialog-transition-leave-to {
+  transform: scale(80%);
+  filter: blur(1px)
+}
+
+/* speedometer point */
+.point {
+    transform: var(--var-transform);
+    transform-origin: 50% 54.16%; /* 12px 13px; */
+    transition: transform 0.3s cubic-bezier(.1,.5,.2,1)
+}
+
+.v-progress-circular__overlay {
+  transition: color 0.1s ease-in-out, stroke-dasharray 0.6s ease-in-out, stroke-dashoffset 0.6s ease-in-out;
+}
+
+/*
+.theme--dark.v-list-item--active:hover::before, .theme--dark.v-list-item--active::before {
+  opacity: initial;
+  background-color: color-mix(in srgb, rgb(240, 240, 240), transparent 75%);
+  color: color-mix(in srgb, rgb(240, 240, 240), transparent 75%);
+  backdrop-filter: blur(6px);
+  transition: background-color 0.3s ease-in-out
+}
+*/
+/*
+.v-tabs--vertical > .v-tabs-bar .v-tabs-bar__content {
+  margin-top: 48px
+} */
+
+/* banger transition */
+
+.oiwp-transition-enter, .oiwp-transition-enter-active {
+  transition: left 250ms cubic-bezier(0.5, 0, 0, 1), max-width 250ms cubic-bezier(.1, 0, 0.65, 1), max-height 250ms cubic-bezier(0.45, 0, 0, 1), filter 250ms cubic-bezier(0.75, 0, 0, 1), translate 250ms cubic-bezier(0.3, 1.2, 0, 1), opacity 50ms, border-radius 250ms cubic-bezier(0.8, 0, .8, 1);
+  display: flex!important;
+  justify-content: flex-end;
+  
+}
+.oiwp-transition-enter, .oiwp-transition-enter-active {
+    max-width: 48px;
+}
+
+.oiwp-transition-leave, .oiwp-transition-leave-active {
+  transition: left 250ms cubic-bezier(0,0.35,0.25,1), max-width 250ms cubic-bezier(0,.75,1,1), max-height 250ms cubic-bezier(0, 1, .1, 1), filter 250ms cubic-bezier(0.5, 0, .75, 1), translate 250ms cubic-bezier(.6,-1.5,.75, .75), border-radius 250ms cubic-bezier(0, .8, 0, 1), opacity 250ms cubic-bezier(.35, 0, 1, .5);
+        display: flex!important;
+  justify-content: flex-end;
+}
+
+.oiwp-scale-enter-active {
+    transition: transform 250ms cubic-bezier(0.2, .5, 0, 1.05), backdrop-filter 70ms cubic-bezier(0, .6, 0, .6), box-shadow 250ms
+}
+.oiwp-scale-enter-active div {
+    transition: opacity 70ms cubic-bezier(0, .6, 0, .6)
+}
+.oiwp-scale-leave-active {
+    transition: transform 250ms cubic-bezier(0, -.2, .2, 1), backdrop-filter 250ms cubic-bezier(.2, 0, .2, 0), box-shadow 250ms
+}
+.oiwp-scale-leave-active div {
+    transition: opacity 250ms cubic-bezier(.2, 0, .2, 0)
+}
+
+.oiwp-transition-enter-active, .oiwp-transition-leave-active {
+    scrollbar-width: none;
+    overflow-y: hidden;
+}
+.oiwp-transition-enter-active::-webkit-scrollbar, .oiwp-transition-leave-active::-webkit-scrollbar {
+    display: none
+}
+
+.oiwp-transition-js-post-enter > div, .oiwp-transition-js-post > div /* .v-list.v-sheet */ {
+    width: max-content;
+}
+
+.oiwp-transition-enter-active {
+    max-width: 48px;
+    max-height: 48px;
+    translate: 0px -48px;
+    border-radius: 60px;
+    filter: blur(4px);
+    opacity: 0.2;
+}
+
+.oiwp-transition-enter-to {
+    translate: 0px 0px;
+    max-width: calc(100% - 1px);
+    max-height: calc(100% - 1px);
+    border-radius: 4px;
+    filter: blur(0px);
+    opacity: 1;
+}
+
+.oiwp-transition-leave {
+    translate: 0px 0px;
+    max-width: calc(100% - 1px);
+    max-height: calc(100% - 1px);
+    border-radius: 4px;
+    filter: blur(0px);
+    opacity: 1;
+
+}
+
+.oiwp-transition-leave-to {
+    max-width: 48px;
+    max-height: 48px;
+    translate: 0px -48px;
+    border-radius: 24px;
+    filter: blur(8px);
+    opacity: 0;
+}
+/* this pisses me off */
+.oiwp-scale-enter-active, .oiwp-scale-leave-to {
+    backdrop-filter: blur(0px);
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0), 0px 8px 10px 1px rgba(0, 0, 0, 0), 0px 3px 14px 2px rgba(0, 0, 0, 0);
+    transform: scale(0.3, 0.3)
+}
+.oiwp-scale-enter-active div, .oiwp-scale-leave-to div {
+    opacity: 0
+}
+.oiwp-scale-enter-to, .oiwp-scale-leave {
+    backdrop-filter: blur(4px);
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    transform: scale(1.0, 1.0)
+}
+.oiwp-scale-enter-to div, .oiwp-scale-leave div {
+    opacity: 1
+}
+
+.scale-enter-active,
+.scale-leave-active {
+  transition: all .2s ease, opacity .2s ease-out;
+}
+
+.scale-enter-to,
+.scale-leave {
+  transform: scale(1.0);
+  opacity: 1
+}
+
+.scale-enter,
+.scale-leave-to {
+  transform: scale(0.2);
+  opacity: 0
+}
